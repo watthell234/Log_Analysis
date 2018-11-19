@@ -4,12 +4,7 @@ import csv
 
 DBNAME = "news"
 
-TOP_THREE = """select reverse(split_part(reverse(path), '/', 1)) as article_slug,
-count(*) as views
-from log
-where path like '%article%'
-and status = '200 OK'
-group by article_slug
+TOP_THREE = """select title, views from slug_views
 order by views desc
 limit 3;"""
 
@@ -31,11 +26,15 @@ def get_reports(SQL):
     rows = cur.fetchall()
     db.close()
     if SQL == TOP_THREE:
-        print(rows)
+        with open("top_three_articles.txt", "w") as f:
+            f.writelines(str(r[0]) + " -- " + str("{:,}".format(r[1])) + " views" + "\n" for r in rows)
+
     elif SQL == TOP_AUTHORS:
-        print(rows)
+        with open("top_authors.txt", "w") as f:
+            f.writelines(str(r[0]) + " -- " + str("{:,}".format(r[1])) + " views" + "\n" for r in rows)
     elif SQL == ERROR_ONE:
-        print(rows)
+        with open("error_one.txt", "w") as f:
+            f.writelines(str(rows[0][0]) + " -- " + str("{0:.2f}%".format(rows[0][1])) + " errors")
 
 get_reports(TOP_THREE)
 get_reports(TOP_AUTHORS)
