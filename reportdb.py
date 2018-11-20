@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 import psycopg2
 import time
+
+start = time.time()
+
 DBNAME = "news"
 
 TOP_THREE = """select title, views from slug_views
@@ -77,3 +80,6 @@ if __name__ == '__main__':
     top_articles(TOP_THREE)
     top_authors(TOP_AUTHORS)
     error_one(ERROR_ONE)
+
+end = time.time()
+print(end - start)
